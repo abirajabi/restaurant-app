@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app2/common/styles.dart';
+import 'package:restaurant_app2/data/api/api_service.dart';
 import 'package:restaurant_app2/data/models/restaurant_list.dart';
+import 'package:restaurant_app2/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app2/ui/restaurant_detail_screen.dart';
 
 class RestaurantCard extends StatelessWidget {
@@ -21,7 +24,8 @@ class RestaurantCard extends StatelessWidget {
   Widget _customCard(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(context, RestaurantDetailScreen.routeName);
+        Navigator.pushNamed(context, RestaurantDetailScreen.routeName,
+            arguments: resto.id);
       },
       child: Card(
         shadowColor: purple1,

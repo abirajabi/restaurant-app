@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       title: 'Restaurant App',
       theme: ThemeData(primarySwatch: Palette.purple),
       home: SplashScreen(),
+      debugShowCheckedModeBanner: false,
       routes: {
         HomeScreen.routeName: (context) => HomeScreen(),
         RestaurantOverviewScreen.routeName: (context) =>

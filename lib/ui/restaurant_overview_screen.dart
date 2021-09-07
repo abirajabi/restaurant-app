@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app2/common/const.dart';
 import 'package:restaurant_app2/common/styles.dart';
 import 'package:restaurant_app2/provider/restaurant_list_provider.dart';
 import 'package:restaurant_app2/widgets/restaurant_card.dart';
@@ -13,12 +14,12 @@ class RestaurantOverviewScreen extends StatefulWidget {
 }
 
 class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
-  final TextEditingController _textSearchContoller = TextEditingController();
+  final TextEditingController _textSearchController = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
-    _textSearchContoller.dispose();
+    _textSearchController.dispose();
   }
 
   @override
@@ -50,7 +51,7 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
                         padding: EdgeInsets.all(8.0),
                         child: TextFormField(
                           style: myTextTheme.subtitle1,
-                          controller: _textSearchContoller,
+                          controller: _textSearchController,
                           maxLines: 1,
                           decoration: InputDecoration(
                             alignLabelWithHint: true,
