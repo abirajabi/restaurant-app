@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:restaurant_app2/common/const.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
@@ -34,6 +36,14 @@ class RestaurantDetailProvider extends ChangeNotifier {
         notifyListeners();
         return _details = response;
       }
+    } on SocketException catch (e) {
+      _state = ResultState.NoInternet;
+      notifyListeners();
+      return _message = "Error no internet: $e";
+    } on HandshakeException catch (e) {
+      _state = ResultState.NoInternet;
+      notifyListeners();
+      return _message = "Error no internet: $e";
     } catch (e) {
       _state = ResultState.Error;
       notifyListeners();

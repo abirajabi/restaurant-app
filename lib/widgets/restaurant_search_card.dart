@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app2/common/styles.dart';
-import 'package:restaurant_app2/data/models/restaurant_list.dart';
+import 'package:restaurant_app2/data/models/restaurant_search.dart';
 import 'package:restaurant_app2/ui/restaurant_detail_screen.dart';
 
-class RestaurantCard extends StatelessWidget {
+class RestaurantSearchCard extends StatelessWidget {
   static final _baseUrl = "https://restaurant-api.dicoding.dev/images/";
 
   final Restaurant resto;
 
-  RestaurantCard({required this.resto});
+  RestaurantSearchCard({required this.resto});
 
   @override
   Widget build(BuildContext context) {

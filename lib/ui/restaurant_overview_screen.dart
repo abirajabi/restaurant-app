@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app2/common/const.dart';
 import 'package:restaurant_app2/common/styles.dart';
+import 'package:restaurant_app2/data/api/api_service.dart';
+import 'package:restaurant_app2/data/models/restaurant_search.dart'
+    as resSearch;
 import 'package:restaurant_app2/provider/restaurant_list_provider.dart';
+import 'package:restaurant_app2/widgets/no_internet.dart';
 import 'package:restaurant_app2/widgets/restaurant_card.dart';
+import 'package:restaurant_app2/widgets/restaurant_search_card.dart';
 
 class RestaurantOverviewScreen extends StatefulWidget {
   static const routeName = '/list';
@@ -14,7 +19,16 @@ class RestaurantOverviewScreen extends StatefulWidget {
 }
 
 class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
+  final GlobalKey globalKey = new GlobalKey<ScaffoldState>();
   final TextEditingController _textSearchController = TextEditingController();
+  bool _isSearching = false;
+  List<resSearch.Restaurant> searchResult = [];
+
+  @override
+  void initState() {
+    _isSearching = false;
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -22,9 +36,24 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
     _textSearchController.dispose();
   }
 
+  _RestaurantOverviewScreenState() {
+    _textSearchController.addListener(() {
+      if (_textSearchController.text.isEmpty) {
+        setState(() {
+          _isSearching = false;
+        });
+      } else {
+        setState(() {
+          _isSearching = true;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: globalKey,
       body: NestedScrollView(
         headerSliverBuilder: (context, isScrolled) {
           return [
@@ -42,7 +71,22 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
                     ),
                   ),
                   Container(
-                    color: primaryColor.withOpacity(0.5),
+                    color: primaryColor.withOpacity(0.7),
+                  ),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Rest\'O',
+                          style: TextStyle(
+                            fontFamily: 'Herbarium',
+                            fontSize: 65,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -52,6 +96,9 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
                         child: TextFormField(
                           style: myTextTheme.subtitle1,
                           controller: _textSearchController,
+                          onChanged: (value) {
+                            searchOperation(value);
+                          },
                           maxLines: 1,
                           decoration: InputDecoration(
                             alignLabelWithHint: true,
@@ -90,22 +137,50 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
             ),
           );
         } else if (state.state == ResultState.HasData) {
-          return ListView.builder(
-            shrinkWrap: true,
-            itemCount: state.restaurants.restaurants.length,
-            itemBuilder: (context, index) {
-              return RestaurantCard(
-                  resto: state.restaurants.restaurants[index]);
-            },
-          );
+          if (_isSearching) {
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: searchResult.length,
+              itemBuilder: (context, index) {
+                return RestaurantSearchCard(resto: searchResult[index]);
+              },
+            );
+          } else {
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: state.restaurants.restaurants.length,
+              itemBuilder: (context, index) {
+                return RestaurantCard(
+                    resto: state.restaurants.restaurants[index]);
+              },
+            );
+          }
         } else if (state.state == ResultState.Error) {
           return Center(child: Text(state.message));
         } else if (state.state == ResultState.NoData) {
           return Center(child: Text(state.message));
+        } else if (state.state == ResultState.NoInternet) {
+          return NoInternet();
         } else {
           return Center(child: Text(''));
         }
       },
     );
+  }
+
+  void searchOperation(String query) async {
+    final apiService = ApiService();
+    searchResult.clear();
+    if (_isSearching != null) {
+      try {
+        final List<resSearch.Restaurant> restaurants =
+            await apiService.searchRestaurant(query);
+        for (var r in restaurants) {
+          searchResult.add(r);
+        }
+      } catch (e) {
+        print('Error --> $e');
+      }
+    }
   }
 }
