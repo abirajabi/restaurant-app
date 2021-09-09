@@ -170,11 +170,12 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
 
   void searchOperation(String query) async {
     final apiService = ApiService();
-    searchResult.clear();
+    // searchResult.clear();
     if (_isSearching != null) {
       try {
         final List<resSearch.Restaurant> restaurants =
             await apiService.searchRestaurant(query);
+        searchResult.clear();
         for (var r in restaurants) {
           searchResult.add(r);
         }

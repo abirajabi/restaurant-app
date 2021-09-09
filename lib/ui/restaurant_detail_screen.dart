@@ -338,7 +338,9 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                                 TextButton(
                                   child: Text('Ok'),
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    setState(() {
+                                      Navigator.pop(context);
+                                    });
                                   },
                                 )
                               ],
