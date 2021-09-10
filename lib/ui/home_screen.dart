@@ -13,8 +13,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Widget> _listWidget = [
-    ChangeNotifierProvider<RestaurantListProvider>(
-      create: (_) => RestaurantListProvider(apiService: ApiService()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<RestaurantListProvider>(
+            create: (_) => RestaurantListProvider(apiService: ApiService())),
+      ],
       child: RestaurantOverviewScreen(),
     ),
   ];

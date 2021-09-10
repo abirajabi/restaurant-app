@@ -6,6 +6,7 @@ import 'package:restaurant_app2/common/styles.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
 import 'package:restaurant_app2/data/models/restaurant_detail.dart';
 import 'package:restaurant_app2/provider/restaurant_detail_provider.dart';
+import 'package:restaurant_app2/widgets/center_message.dart';
 import 'package:restaurant_app2/widgets/no_internet.dart';
 
 class RestaurantDetailScreen extends StatefulWidget {
@@ -87,7 +88,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
             } else if (state.state == ResultState.NoInternet) {
               return NoInternet();
             } else {
-              return Center(child: Text('Unknown Error'));
+              return CenterMessage(message: 'Unknown Error');
             }
           },
         ),
@@ -327,6 +328,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                 if (_formKey.currentState!.validate()) {
                   bool success = await widget.apiService.postCustomerReview(
                       resId, _txtName.text, _txtReview.text);
+
                   try {
                     if (success) {
                       await showDialog(

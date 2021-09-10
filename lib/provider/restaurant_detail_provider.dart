@@ -10,7 +10,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
   final String resId;
 
   RestaurantDetailProvider({required this.apiService, required this.resId}) {
-    _fetchRestaurantDetail();
+    fetchRestaurantDetail();
   }
 
   ResultState? _state;
@@ -23,7 +23,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
 
   RestaurantDetail get details => _details;
 
-  Future<dynamic> _fetchRestaurantDetail() async {
+  Future<dynamic> fetchRestaurantDetail() async {
     try {
       _state = ResultState.Loading;
       notifyListeners();
@@ -50,4 +50,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
       return _message = "Error --> $e";
     }
   }
+
+  Future<dynamic> postCustomerReview(
+      String id, String name, String review) async {}
 }

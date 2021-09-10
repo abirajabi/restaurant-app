@@ -59,20 +59,11 @@ class ApiService {
     return success;
   }
 
-  Future<List<resSearch.Restaurant>> searchRestaurant(String query) async {
+  Future<resSearch.RestaurantSearchList> searchRestaurant(String query) async {
     final response = await http.get(Uri.parse(_baseUrl + "search?q=$query"));
 
     if (response.statusCode == 200) {
-      print(response.body);
-      List<resSearch.Restaurant> restaurantList =
-          resSearch.RestaurantSearchList.fromJson(jsonDecode(response.body))
-              .restaurants;
-
-      if (restaurantList.isNotEmpty) {
-        return restaurantList;
-      } else {
-        return [];
-      }
+      return resSearch.RestaurantSearchList.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to find restaurant');
     }
