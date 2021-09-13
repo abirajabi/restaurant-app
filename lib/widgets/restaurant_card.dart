@@ -26,7 +26,7 @@ class RestaurantCard extends StatelessWidget {
       },
       child: Card(
         shadowColor: purple1,
-        elevation: 1,
+        elevation: 0,
         margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),

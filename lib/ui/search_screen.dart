@@ -13,7 +13,7 @@ class SearchScreen extends StatelessWidget {
   final String searchQuery;
   final ApiService apiService;
 
-  SearchScreen({required this.searchQuery, required this.apiService}) {}
+  SearchScreen({required this.searchQuery, required this.apiService});
 
   @override
   Widget build(BuildContext context) {

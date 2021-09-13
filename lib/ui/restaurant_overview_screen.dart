@@ -53,6 +53,7 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       key: globalKey,
       body: NestedScrollView(
         headerSliverBuilder: (context, isScrolled) {
