@@ -1,56 +1,57 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:restaurant_app2/common/const.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
 import 'package:restaurant_app2/data/models/restaurant_detail.dart';
 
-class RestaurantDetailProvider extends ChangeNotifier {
+class ResDetailController extends GetxController {
   final ApiService apiService;
   final String resId;
 
-  RestaurantDetailProvider({required this.apiService, required this.resId}) {
-    fetchRestaurantDetail();
-  }
+  ResDetailController({required this.apiService, required this.resId});
 
-  ResultState? _state;
+  ResultState _state = ResultState.Idle;
+  late String _message = '';
+  late RestaurantDetail _detail;
 
-  ResultState? get state => _state;
-  late String _message;
-  late RestaurantDetail _details;
+  ResultState get state => _state;
 
   String get message => _message;
 
-  RestaurantDetail get details => _details;
+  RestaurantDetail get detail => _detail;
+
+  @override
+  void onInit() {
+    fetchRestaurantDetail();
+    super.onInit();
+  }
 
   Future<dynamic> fetchRestaurantDetail() async {
     try {
       _state = ResultState.Loading;
-      notifyListeners();
+      update();
       final response = await apiService.restaurantDetailById(resId);
       if (response.restaurant == null) {
         _state = ResultState.NoData;
-        notifyListeners();
+        update();
       } else {
         _state = ResultState.HasData;
-        notifyListeners();
-        return _details = response;
+        update();
+        return _detail = response;
       }
     } on SocketException catch (e) {
       _state = ResultState.NoInternet;
-      notifyListeners();
-      return _message = "Error no internet: $e";
+      update();
+      return _message = 'Error no internet: $e';
     } on HandshakeException catch (e) {
       _state = ResultState.NoInternet;
-      notifyListeners();
-      return _message = "Error no internet: $e";
+      update();
+      return _message = 'Error no internet: $e';
     } catch (e) {
       _state = ResultState.Error;
-      notifyListeners();
-      return _message = "Error --> $e";
+      update();
+      return _message = 'Error --> $e';
     }
   }
-
-  Future<dynamic> postCustomerReview(
-      String id, String name, String review) async {}
 }

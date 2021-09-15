@@ -1,12 +1,12 @@
 import 'package:align_positioned/align_positioned.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import 'package:restaurant_app2/common/const.dart';
 import 'package:restaurant_app2/common/styles.dart';
+import 'package:restaurant_app2/controller/res_detail_controller.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
 import 'package:restaurant_app2/data/models/restaurant_detail.dart';
-import 'package:restaurant_app2/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app2/widgets/center_message.dart';
 import 'package:restaurant_app2/widgets/no_internet.dart';
 import 'package:sizer/sizer.dart';
@@ -15,7 +15,9 @@ class RestaurantDetailScreen extends StatefulWidget {
   static final String routeName = '/detail';
   static final String _baseImageUrl =
       "https://restaurant-api.dicoding.dev/images/";
-  late final ApiService apiService;
+  final ApiService apiService = ApiService();
+
+  RestaurantDetailScreen();
 
   @override
   _RestaurantDetailScreenState createState() => _RestaurantDetailScreenState();
@@ -27,87 +29,83 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
   @override
   void initState() {
     super.initState();
-    widget.apiService = ApiService();
   }
 
   @override
   Widget build(BuildContext context) {
     final String resId = ModalRoute.of(context)!.settings.arguments as String;
-    return ChangeNotifierProvider<RestaurantDetailProvider>(
-      create: (_) =>
-          RestaurantDetailProvider(apiService: widget.apiService, resId: resId),
-      child: Scaffold(
-        body: Consumer<RestaurantDetailProvider>(
-          builder: (context, state, _) {
-            if (state.state == ResultState.Loading) {
-              return Center(
-                child: CircularProgressIndicator(
-                  color: primaryColor,
-                  backgroundColor: secondaryColor,
-                ),
-              );
-            } else if (state.state == ResultState.HasData) {
-              return NestedScrollView(
-                headerSliverBuilder: (context, isScrolled) {
-                  return [
-                    SliverAppBar(
-                      leading: IconButton(
-                        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                      title: Text(state.details.restaurant.name),
-                      expandedHeight: 200,
-                      pinned: true,
-                      flexibleSpace: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: Hero(
-                              tag: state.details.restaurant.pictureId,
-                              child: Image.network(
-                                RestaurantDetailScreen._baseImageUrl +
-                                    "small/" +
-                                    state.details.restaurant.pictureId,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            color: primaryColor.withOpacity(0.7),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 3.w),
-                            child: AlignPositioned(
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.favorite_border,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {},
-                              ),
-                              alignment: Alignment.bottomRight,
-                              moveByChildHeight: 0.5,
-                            ),
-                          )
-                        ],
-                      ),
+    return Scaffold(
+      body: GetBuilder<ResDetailController>(
+        init: ResDetailController(resId: resId, apiService: widget.apiService),
+        builder: (controller) {
+          if (controller.state == ResultState.Loading) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: primaryColor,
+                backgroundColor: secondaryColor,
+              ),
+            );
+          } else if (controller.state == ResultState.HasData) {
+            return NestedScrollView(
+              headerSliverBuilder: (context, isScrolled) {
+                return [
+                  SliverAppBar(
+                    leading: IconButton(
+                      icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
-                  ];
-                },
-                body: _buildDetail(state.details.restaurant),
-              );
-            } else if (state.state == ResultState.NoData) {
-              return Center(child: Text(state.message));
-            } else if (state.state == ResultState.Error) {
-              return Center(child: Text(state.message));
-            } else if (state.state == ResultState.NoInternet) {
-              return NoInternet();
-            } else {
-              return CenterMessage(message: 'Unknown Error');
-            }
-          },
-        ),
+                    title: Text(controller.detail.restaurant.name),
+                    expandedHeight: 200,
+                    pinned: true,
+                    flexibleSpace: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Hero(
+                            tag: controller.detail.restaurant.pictureId,
+                            child: Image.network(
+                              RestaurantDetailScreen._baseImageUrl +
+                                  "small/" +
+                                  controller.detail.restaurant.pictureId,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          color: primaryColor.withOpacity(0.7),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(right: 3.w),
+                          child: AlignPositioned(
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.favorite_border,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {},
+                            ),
+                            alignment: Alignment.bottomRight,
+                            moveByChildHeight: 0.5,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ];
+              },
+              body: _buildDetail(controller.detail.restaurant),
+            );
+          } else if (controller.state == ResultState.NoData) {
+            return Center(child: Text(controller.message));
+          } else if (controller.state == ResultState.Error) {
+            return Center(child: Text(controller.message));
+          } else if (controller.state == ResultState.NoInternet) {
+            return NoInternet();
+          } else {
+            return CenterMessage(message: 'Unknown Error');
+          }
+        },
       ),
     );
   }
