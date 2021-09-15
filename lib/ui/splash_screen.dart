@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:restaurant_app2/ui/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -27,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPage() {
-    Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+    Get.offNamed(HomeScreen.routeName);
   }
 
   @override

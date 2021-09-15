@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 import 'package:restaurant_app2/common/const.dart';
 import 'package:restaurant_app2/common/styles.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
-import 'package:restaurant_app2/provider/restaurant_list_provider.dart'
-    as resList;
-import 'package:restaurant_app2/provider/search_provider.dart';
+import 'package:restaurant_app2/controller/res_list_controller.dart' as resList;
+import 'package:restaurant_app2/controller/search_controller.dart';
 import 'package:restaurant_app2/widgets/center_message.dart';
 import 'package:restaurant_app2/widgets/no_internet.dart';
 import 'package:restaurant_app2/widgets/restaurant_card.dart';
@@ -53,69 +52,65 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) =>
-          SearchProvider(apiService: ApiService(), query: searchText),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        key: globalKey,
-        body: NestedScrollView(
-          headerSliverBuilder: (context, isScrolled) {
-            return [
-              SliverAppBar(
-                expandedHeight: 30.h,
-                toolbarHeight: 7.h,
-                elevation: 0,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  title: _searchBar(context),
-                  titlePadding: EdgeInsets.symmetric(vertical: 1.h),
-                  centerTitle: true,
-                  background: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Image.asset(
-                          'assets/sliver-back.jpg',
-                          fit: BoxFit.cover,
-                        ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      key: globalKey,
+      body: NestedScrollView(
+        headerSliverBuilder: (context, isScrolled) {
+          return [
+            SliverAppBar(
+              expandedHeight: 30.h,
+              toolbarHeight: 7.h,
+              elevation: 0,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: _searchBar(),
+                titlePadding: EdgeInsets.symmetric(vertical: 1.h),
+                centerTitle: true,
+                background: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Image.asset(
+                        'assets/sliver-back.jpg',
+                        fit: BoxFit.cover,
                       ),
-                      Container(
-                        color: primaryColor.withOpacity(0.7),
-                      ),
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Rest\'O',
-                              style: TextStyle(
-                                fontFamily: 'Herbarium',
-                                fontSize: 32.sp,
-                                color: Colors.white,
-                              ),
+                    ),
+                    Container(
+                      color: primaryColor.withOpacity(0.7),
+                    ),
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Rest\'O',
+                            style: TextStyle(
+                              fontFamily: 'Herbarium',
+                              fontSize: 32.sp,
+                              color: Colors.white,
                             ),
-                            Text(
-                              'Find the best restaurants around you',
-                              style: TextStyle(
-                                  fontSize: myTextTheme.bodyText2!.fontSize,
-                                  fontFamily: myTextTheme.bodyText2!.fontFamily,
-                                  fontWeight: myTextTheme.bodyText2!.fontWeight,
-                                  letterSpacing:
-                                      myTextTheme.bodyText2!.letterSpacing,
-                                  color: Colors.white),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                          ),
+                          Text(
+                            'Find the best restaurants around you',
+                            style: TextStyle(
+                                fontSize: myTextTheme.bodyText2!.fontSize,
+                                fontFamily: myTextTheme.bodyText2!.fontFamily,
+                                fontWeight: myTextTheme.bodyText2!.fontWeight,
+                                letterSpacing:
+                                    myTextTheme.bodyText2!.letterSpacing,
+                                color: Colors.white),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ];
-          },
-          body: _buildList(),
-        ),
+              ),
+            )
+          ];
+        },
+        body: _buildList(),
       ),
     );
   }
@@ -127,26 +122,29 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
           delegate: SliverChildListDelegate(
             [
               _isSearching
-                  ? Consumer<SearchProvider>(
-                      builder: (context, state, child) {
-                        if (state.state == ResultState.Loading) {
+                  ? GetBuilder<SearchController>(
+                      init: SearchController(
+                          apiService: ApiService(), query: searchText),
+                      builder: (controller) {
+                        if (controller.state == ResultState.Loading) {
                           return Center(
                             child: CircularProgressIndicator(),
                           );
-                        } else if (state.state == ResultState.NoData) {
+                        } else if (controller.state == ResultState.NoData) {
                           return SearchNotFound();
-                        } else if (state.state == ResultState.NoInternet) {
+                        } else if (controller.state == ResultState.NoInternet) {
                           return NoInternet();
-                        } else if (state.state == ResultState.Error) {
-                          return CenterMessage(message: state.message);
-                        } else if (state.state == ResultState.HasData) {
+                        } else if (controller.state == ResultState.Error) {
+                          return CenterMessage(message: controller.message);
+                        } else if (controller.state == ResultState.HasData) {
                           return ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: state.searchResult.founded,
+                            itemCount: controller.searchResult.founded,
                             itemBuilder: (context, index) {
                               return RestaurantSearchCard(
-                                  resto: state.searchResult.restaurants[index]);
+                                  resto: controller
+                                      .searchResult.restaurants[index]);
                             },
                           );
                         } else {
@@ -154,30 +152,33 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
                         }
                       },
                     )
-                  : Consumer<resList.RestaurantListProvider>(
-                      builder: (context, state, child) {
-                        if (state.state == ResultState.HasData) {
+                  : GetBuilder<resList.ResListController>(
+                      init: resList.ResListController(apiService: ApiService()),
+                      builder: (controller) {
+                        if (controller.state == ResultState.HasData) {
                           return ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
-                            itemCount: state.restaurants.restaurants.length,
+                            itemCount:
+                                controller.restaurants.restaurants.length,
                             itemBuilder: (context, index) {
                               return RestaurantCard(
-                                  resto: state.restaurants.restaurants[index]);
+                                  resto: controller
+                                      .restaurants.restaurants[index]);
                             },
                           );
-                        } else if (state.state == ResultState.Loading) {
+                        } else if (controller.state == ResultState.Loading) {
                           return Center(
                             child: CircularProgressIndicator(),
                           );
-                        } else if (state.state == ResultState.NoData) {
-                          return CenterMessage(message: state.message);
-                        } else if (state.state == ResultState.NoInternet) {
+                        } else if (controller.state == ResultState.NoData) {
+                          return CenterMessage(message: controller.message);
+                        } else if (controller.state == ResultState.NoInternet) {
                           return NoInternet();
-                        } else if (state.state == ResultState.Error) {
-                          return CenterMessage(message: state.message);
+                        } else if (controller.state == ResultState.Error) {
+                          return CenterMessage(message: controller.message);
                         } else {
-                          return CenterMessage(message: state.message);
+                          return CenterMessage(message: controller.message);
                         }
                       },
                     ),
@@ -188,7 +189,7 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
     );
   }
 
-  Widget _searchBar(BuildContext ctx) {
+  Widget _searchBar() {
     return LayoutBuilder(
       builder: (ctx, _) {
         return Container(
@@ -201,8 +202,7 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
             maxLines: 1,
             onChanged: (value) {
               searchText = value;
-              Provider.of<SearchProvider>(ctx, listen: false)
-                  .fetchSearchResult(searchText);
+              Get.find<SearchController>().fetchSearchResult(searchText);
             },
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.search),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app2/common/const.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
-import 'package:restaurant_app2/provider/search_provider.dart';
+import 'package:restaurant_app2/controller/search_controller.dart';
 import 'package:restaurant_app2/widgets/center_message.dart';
 import 'package:restaurant_app2/widgets/no_internet.dart';
 import 'package:restaurant_app2/widgets/restaurant_search_card.dart';
@@ -17,7 +17,7 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SearchProvider>(
+    return Consumer<SearchController>(
       builder: (context, state, child) {
         if (state.state == ResultState.Loading) {
           return Center(

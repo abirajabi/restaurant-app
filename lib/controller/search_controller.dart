@@ -1,17 +1,21 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:restaurant_app2/common/const.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
 import 'package:restaurant_app2/data/models/restaurant_search.dart';
 
-class SearchProvider extends ChangeNotifier {
+class SearchController extends GetxController {
   final ApiService apiService;
   final String query;
 
-  SearchProvider({required this.apiService, required this.query}) {
+  @override
+  void onInit() {
     fetchSearchResult(query);
+    super.onInit();
   }
+
+  SearchController({required this.apiService, required this.query});
 
   String _message = '';
   late ResultState _state;
@@ -26,27 +30,27 @@ class SearchProvider extends ChangeNotifier {
   Future<dynamic> fetchSearchResult(String query) async {
     try {
       _state = ResultState.Loading;
-      notifyListeners();
+      update();
       final response = await apiService.searchRestaurant(query);
       if (response.restaurants.isEmpty) {
         _state = ResultState.NoData;
-        notifyListeners();
+        update();
       } else {
         _state = ResultState.HasData;
-        notifyListeners();
+        update();
         return _searchResult = response;
       }
     } on SocketException catch (e) {
       _state = ResultState.NoInternet;
-      notifyListeners();
+      update();
       return _message = 'Error no internet: $e';
     } on HandshakeException catch (e) {
       _state = ResultState.NoInternet;
-      notifyListeners();
+      update();
       return _message = 'Error no internet: $e';
     } catch (e) {
       _state = ResultState.Error;
-      notifyListeners();
+      update();
       return _message = 'Error --> $e';
     }
   }

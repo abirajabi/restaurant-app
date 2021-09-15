@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:restaurant_app2/common/styles.dart';
 import 'package:restaurant_app2/data/models/restaurant_list.dart';
 import 'package:restaurant_app2/ui/restaurant_detail_screen.dart';
@@ -24,8 +25,7 @@ class RestaurantCard extends StatelessWidget {
       padding: EdgeInsets.all(16.0),
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(context, RestaurantDetailScreen.routeName,
-              arguments: resto.id);
+          Get.toNamed(RestaurantDetailScreen.routeName, arguments: resto.id);
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

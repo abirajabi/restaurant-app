@@ -53,7 +53,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                     leading: IconButton(
                       icon: Icon(Icons.arrow_back_ios, color: Colors.white),
                       onPressed: () {
-                        Navigator.pop(context);
+                        Get.back();
                       },
                     ),
                     title: Text(controller.detail.restaurant.name),
@@ -333,7 +333,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Get.back();
               },
               child: Text('Cancel', style: myTextTheme.button),
             ),
@@ -354,9 +354,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                                 TextButton(
                                   child: Text('Ok'),
                                   onPressed: () {
-                                    setState(() {
-                                      Navigator.pop(context);
-                                    });
+                                    Get.back();
                                   },
                                 )
                               ],
@@ -371,7 +369,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                             );
                           });
                     }
-                    Navigator.pop(context);
+                    Get.back();
                   } catch (e) {
                     print('Error --> $e');
                   }
