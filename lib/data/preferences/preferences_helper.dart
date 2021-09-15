@@ -6,8 +6,14 @@ class PreferencesHelper {
 
   PreferencesHelper({required this.sharedPreferences});
 
-  Future<bool> get isDailyNewsActivated async {
+  Future<bool> get isDailyReminderActivated async {
     SharedPreferences prefs = await sharedPreferences;
     return prefs.getBool(DAILY_REMINDER) ?? false;
+  }
+
+  Future<bool> setDailyReminder(bool value) async {
+    final prefs = await sharedPreferences;
+    prefs.setBool(DAILY_REMINDER, value);
+    return value;
   }
 }

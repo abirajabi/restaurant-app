@@ -11,7 +11,7 @@ class NoInternet extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                'no-internet.png',
+                'assets/no-internet.png',
                 width: 250,
               ),
               Text(

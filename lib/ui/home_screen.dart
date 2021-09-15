@@ -2,10 +2,7 @@ import 'dart:core';
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:restaurant_app2/data/api/api_service.dart';
-import 'package:restaurant_app2/provider/preferences_provider.dart';
-import 'package:restaurant_app2/provider/restaurant_list_provider.dart';
+import 'package:restaurant_app2/ui/favorite_screen.dart';
 import 'package:restaurant_app2/ui/restaurant_overview_screen.dart';
 import 'package:restaurant_app2/ui/settings_page.dart';
 import 'package:sizer/sizer.dart';
@@ -22,20 +19,18 @@ class _HomeScreenState extends State<HomeScreen> {
   GlobalKey<CurvedNavigationBarState> _bottomNavbarKey = GlobalKey();
 
   List<Widget> _listWidget = [
-    ChangeNotifierProvider(
-      create: (_) => RestaurantListProvider(apiService: ApiService()),
-      child: RestaurantOverviewScreen(),
-    ),
-    ChangeNotifierProvider(
-      create: (_) => PreferencesProvider(),
-      child: SettingsPage(),
-    ),
-    // SettingsPage();
+    RestaurantOverviewScreen(),
+    FavoriteScreen(),
+    SettingsPage(),
   ];
 
   List<Widget> bottomNavbarItems = [
     Icon(
       Icons.fastfood,
+      color: Colors.white,
+    ),
+    Icon(
+      Icons.favorite,
       color: Colors.white,
     ),
     Icon(
@@ -48,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: _listWidget[0],
+      body: _listWidget.elementAt(_page),
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavbarKey,
         items: bottomNavbarItems,

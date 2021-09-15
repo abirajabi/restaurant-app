@@ -59,54 +59,62 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         key: globalKey,
-        body: SafeArea(
-          child: NestedScrollView(
-            headerSliverBuilder: (context, isScrolled) {
-              return [
-                SliverAppBar(
-                  expandedHeight: 30.h,
-                  toolbarHeight: 7.h,
-                  elevation: 0,
-                  pinned: true,
-                  flexibleSpace: FlexibleSpaceBar(
-                    title: _searchBar(context),
-                    titlePadding: EdgeInsets.symmetric(vertical: 1.h),
-                    centerTitle: true,
-                    background: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image.asset(
-                            'assets/sliver-back.jpg',
-                            fit: BoxFit.cover,
-                          ),
+        body: NestedScrollView(
+          headerSliverBuilder: (context, isScrolled) {
+            return [
+              SliverAppBar(
+                expandedHeight: 30.h,
+                toolbarHeight: 7.h,
+                elevation: 0,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: _searchBar(context),
+                  titlePadding: EdgeInsets.symmetric(vertical: 1.h),
+                  centerTitle: true,
+                  background: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Image.asset(
+                          'assets/sliver-back.jpg',
+                          fit: BoxFit.cover,
                         ),
-                        Container(
-                          color: primaryColor.withOpacity(0.7),
-                        ),
-                        Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Rest\'O',
-                                style: TextStyle(
-                                  fontFamily: 'Herbarium',
-                                  fontSize: 32.sp,
-                                  color: Colors.white,
-                                ),
+                      ),
+                      Container(
+                        color: primaryColor.withOpacity(0.7),
+                      ),
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Rest\'O',
+                              style: TextStyle(
+                                fontFamily: 'Herbarium',
+                                fontSize: 32.sp,
+                                color: Colors.white,
                               ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                            ),
+                            Text(
+                              'Find the best restaurants around you',
+                              style: TextStyle(
+                                  fontSize: myTextTheme.bodyText2!.fontSize,
+                                  fontFamily: myTextTheme.bodyText2!.fontFamily,
+                                  fontWeight: myTextTheme.bodyText2!.fontWeight,
+                                  letterSpacing:
+                                      myTextTheme.bodyText2!.letterSpacing,
+                                  color: Colors.white),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ];
-            },
-            body: _buildList(),
-          ),
+                ),
+              )
+            ];
+          },
+          body: _buildList(),
         ),
       ),
     );
@@ -206,9 +214,13 @@ class _RestaurantOverviewScreenState extends State<RestaurantOverviewScreen> {
               hintStyle: TextStyle(
                 fontSize: 9.5.sp,
               ),
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.white, width: 1),
-                borderRadius: BorderRadius.circular(25),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                borderRadius: BorderRadius.circular(25.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: purple1, width: 1.0),
+                borderRadius: BorderRadius.circular(25.0),
               ),
             ),
           ),

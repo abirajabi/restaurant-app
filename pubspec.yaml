@@ -29,7 +29,10 @@ dependencies:
   sizer: ^2.0.13
   curved_navigation_bar: ^1.0.1
   shared_preferences: ^2.0.7
-
+  align_positioned: ^2.0.4
+  get: ^4.3.8
+  hive: ^2.0.4
+  hive_flutter: ^1.1.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -37,6 +40,8 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
+  build_runner: ^2.1.2
+  hive_generator: ^1.1.1
   flutter_test:
     sdk: flutter
 

@@ -1,3 +1,4 @@
+import 'package:align_positioned/align_positioned.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:restaurant_app2/data/models/restaurant_detail.dart';
 import 'package:restaurant_app2/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app2/widgets/center_message.dart';
 import 'package:restaurant_app2/widgets/no_internet.dart';
+import 'package:sizer/sizer.dart';
 
 class RestaurantDetailScreen extends StatefulWidget {
   static final String routeName = '/detail';
@@ -74,6 +76,20 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                           Container(
                             color: primaryColor.withOpacity(0.7),
                           ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 3.w),
+                            child: AlignPositioned(
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {},
+                              ),
+                              alignment: Alignment.bottomRight,
+                              moveByChildHeight: 0.5,
+                            ),
+                          )
                         ],
                       ),
                     ),

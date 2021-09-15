@@ -1,39 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
+import 'package:get/get.dart';
+import 'package:restaurant_app2/common/styles.dart';
+import 'package:restaurant_app2/controller/preferences_controller.dart';
 
-class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key? key}) : super(key: key);
-
-  @override
-  State<SettingsPage> createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  late bool _isDailyNewsActivated;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(3.w),
-            child: Row(
-              children: [
-                Switch(
-                  value: _isDailyNewsActivated,
-                  onChanged: (value) {},
-                )
-              ],
-            ),
-          )
-        ],
+    return Scaffold(
+      body: Center(
+        child: GetX<PreferencesController>(
+          init: PreferencesController(),
+          builder: (controller) => Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Daily Reminder', style: myTextTheme.headline6),
+              Switch(
+                value: controller.isDailyReminderActive.value,
+                onChanged: (value) {
+                  controller.setDailyReminder(value);
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
