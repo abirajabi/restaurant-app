@@ -1,11 +1,12 @@
-import 'package:align_positioned/align_positioned.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:restaurant_app2/common/const.dart';
 import 'package:restaurant_app2/common/styles.dart';
+import 'package:restaurant_app2/controller/favorite_controller.dart';
 import 'package:restaurant_app2/controller/res_detail_controller.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
+import 'package:restaurant_app2/data/db/hm_restaurant.dart';
 import 'package:restaurant_app2/data/models/restaurant_detail.dart';
 import 'package:restaurant_app2/widgets/center_message.dart';
 import 'package:restaurant_app2/widgets/no_internet.dart';
@@ -25,6 +26,7 @@ class RestaurantDetailScreen extends StatefulWidget {
 
 class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final favController = Get.put(FavoriteController());
 
   @override
   void initState() {
@@ -33,7 +35,7 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final String resId = ModalRoute.of(context)!.settings.arguments as String;
+    final String resId = Get.arguments;
     return Scaffold(
       body: GetBuilder<ResDetailController>(
         init: ResDetailController(resId: resId, apiService: widget.apiService),
@@ -50,6 +52,30 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
               headerSliverBuilder: (context, isScrolled) {
                 return [
                   SliverAppBar(
+                    actions: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 3.w),
+                        child: IconButton(
+                          icon: favController
+                                  .isFavorite(controller.detail.restaurant.id)
+                              ? Icon(Icons.favorite, color: Colors.redAccent)
+                              : Icon(Icons.favorite_border,
+                                  color: Colors.white),
+                          onPressed: () {
+                            setState(() {
+                              favController.isFavorite(
+                                      controller.detail.restaurant.id)
+                                  ? favController.removeRestaurant(
+                                      controller.detail.restaurant.id)
+                                  : favController.addFavorite(
+                                      HiveRestaurant.fromResDetail(
+                                          controller.detail.restaurant),
+                                    );
+                            });
+                          },
+                        ),
+                      )
+                    ],
                     leading: IconButton(
                       icon: Icon(Icons.arrow_back_ios, color: Colors.white),
                       onPressed: () {
@@ -75,20 +101,6 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                         Container(
                           color: primaryColor.withOpacity(0.7),
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 3.w),
-                          child: AlignPositioned(
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.favorite_border,
-                                color: Colors.red,
-                              ),
-                              onPressed: () {},
-                            ),
-                            alignment: Alignment.bottomRight,
-                            moveByChildHeight: 0.5,
-                          ),
-                        )
                       ],
                     ),
                   ),
@@ -342,7 +354,6 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                 if (_formKey.currentState!.validate()) {
                   bool success = await widget.apiService.postCustomerReview(
                       resId, _txtName.text, _txtReview.text);
-
                   try {
                     if (success) {
                       await showDialog(

@@ -2,10 +2,14 @@ import 'dart:core';
 
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurant_app2/common/const.dart';
+import 'package:restaurant_app2/data/db/hm_restaurant.dart';
 import 'package:restaurant_app2/ui/favorite_screen.dart';
 import 'package:restaurant_app2/ui/restaurant_overview_screen.dart';
 import 'package:restaurant_app2/ui/settings_page.dart';
+import 'package:restaurant_app2/widgets/center_message.dart';
 import 'package:sizer/sizer.dart';
+import 'package:hive/hive.dart';
 
 class HomeScreen extends StatefulWidget {
   static final String routeName = '/home';
@@ -20,7 +24,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> _listWidget = [
     RestaurantOverviewScreen(),
-    FavoriteScreen(),
+    FutureBuilder(
+      future: Hive.openBox<HiveRestaurant>(BOX_FAVORITE),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            return CenterMessage(message: snapshot.error.toString());
+          } else {
+            return FavoriteScreen();
+          }
+        } else {
+          return CenterMessage(message: 'Failed to open database');
+        }
+      },
+    ),
     SettingsPage(),
   ];
 
@@ -59,5 +76,11 @@ class _HomeScreenState extends State<HomeScreen> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    Hive.close();
+    super.dispose();
   }
 }
