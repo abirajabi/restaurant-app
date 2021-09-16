@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:restaurant_app2/common/const.dart';
+import 'package:restaurant_app2/common/styles.dart';
 import 'package:restaurant_app2/data/db/hm_restaurant.dart';
 
 class FavoriteController extends GetxController {
@@ -36,5 +37,15 @@ class FavoriteController extends GetxController {
       return true;
     }
     return false;
+  }
+
+  void addedToFavorite(String name) {
+    Get.snackbar('Favorite', 'Added $name to favorite list',
+        backgroundColor: purple5, snackPosition: SnackPosition.BOTTOM);
+  }
+
+  void removedFromFavorite(String name) {
+    Get.snackbar('Favorite', 'Removed $name from favorite list',
+        backgroundColor: purple5, snackPosition: SnackPosition.BOTTOM);
   }
 }

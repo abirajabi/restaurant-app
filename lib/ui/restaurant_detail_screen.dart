@@ -63,14 +63,21 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                                   color: Colors.white),
                           onPressed: () {
                             setState(() {
-                              favController.isFavorite(
-                                      controller.detail.restaurant.id)
-                                  ? favController.removeRestaurant(
-                                      controller.detail.restaurant.id)
-                                  : favController.addFavorite(
-                                      HiveRestaurant.fromResDetail(
-                                          controller.detail.restaurant),
-                                    );
+                              if (favController.isFavorite(
+                                  controller.detail.restaurant.id)) {
+                                favController.removeRestaurant(
+                                    controller.detail.restaurant.id);
+                                Get.find<FavoriteController>()
+                                    .removedFromFavorite(
+                                        controller.detail.restaurant.name);
+                              } else {
+                                favController.addFavorite(
+                                  HiveRestaurant.fromResDetail(
+                                      controller.detail.restaurant),
+                                );
+                                Get.find<FavoriteController>().addedToFavorite(
+                                    controller.detail.restaurant.name);
+                              }
                             });
                           },
                         ),
