@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:restaurant_app2/common/styles.dart';
 import 'package:restaurant_app2/controller/favorite_controller.dart';
 import 'package:restaurant_app2/data/db/hm_restaurant.dart';
 import 'package:restaurant_app2/widgets/restaurant_card.dart';
@@ -15,7 +16,11 @@ class FavoriteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your favorite restaurants'),
+        title: Center(
+            child: Text(
+          'Your favorite restaurants',
+          style: myTextTheme.bodyText1,
+        )),
       ),
       body: _buildFavoriteList(),
     );

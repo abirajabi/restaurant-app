@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_app2/common/const.dart';
 import 'package:restaurant_app2/data/db/hm_restaurant.dart';
 import 'package:restaurant_app2/ui/favorite_screen.dart';
+import 'package:restaurant_app2/ui/restaurant_detail_screen.dart';
 import 'package:restaurant_app2/ui/restaurant_overview_screen.dart';
 import 'package:restaurant_app2/ui/settings_page.dart';
+import 'package:restaurant_app2/utils/notification_service.dart';
 import 'package:restaurant_app2/widgets/center_message.dart';
 import 'package:sizer/sizer.dart';
 import 'package:hive/hive.dart';
@@ -21,6 +23,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _page = 0;
   GlobalKey<CurvedNavigationBarState> _bottomNavbarKey = GlobalKey();
+  final NotificationService _notificationService = NotificationService();
 
   List<Widget> _listWidget = [
     RestaurantOverviewScreen(),
@@ -55,6 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
       color: Colors.white,
     ),
   ];
+
+  @override
+  void initState() {
+    _notificationService
+        .configureSelectNotificationSubject(RestaurantDetailScreen.routeName);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

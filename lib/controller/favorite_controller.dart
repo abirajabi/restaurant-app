@@ -40,11 +40,13 @@ class FavoriteController extends GetxController {
   }
 
   void addedToFavorite(String name) {
+    print('RFF --> $name');
     Get.snackbar('Favorite', 'Added $name to favorite list',
         backgroundColor: purple5, snackPosition: SnackPosition.BOTTOM);
   }
 
   void removedFromFavorite(String name) {
+    print('RFF --> $name');
     Get.snackbar('Favorite', 'Removed $name from favorite list',
         backgroundColor: purple5, snackPosition: SnackPosition.BOTTOM);
   }

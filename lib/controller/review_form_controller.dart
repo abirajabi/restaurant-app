@@ -2,23 +2,29 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
 
-class ReviewFormBinding implements Bindings {
-  @override
-  void dependencies() {
-    Get.lazyPut(() => ReviewFormController());
-  }
-}
-
 class ReviewFormController extends GetxController {
   late final ApiService apiService;
-  final reviewFormKey = GlobalKey<FormState>();
+  final _reviewFormKey = GlobalKey<FormState>();
   final _txtReview = TextEditingController();
   final _txtName = TextEditingController();
+
+  get reviewFormKey => _reviewFormKey;
+
+  get txtReview => _txtReview;
+
+  get txtName => _txtName;
 
   @override
   void onInit() {
     apiService = ApiService();
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    _txtReview.dispose();
+    _txtName.dispose();
+    super.onClose();
   }
 
   String? validator(String value) {
@@ -29,13 +35,19 @@ class ReviewFormController extends GetxController {
   }
 
   void postReview(String resId) async {
-    if (reviewFormKey.currentState!.validate()) {
+    if (_reviewFormKey.currentState!.validate()) {
       bool postSuccess = await apiService.postCustomerReview(
           resId, _txtName.text, _txtReview.text);
       if (postSuccess) {
+        _txtName.clear();
+        _txtReview.clear();
         Get.snackbar('Customer Review', 'Review added');
+        update();
       } else {
+        _txtName.clear();
+        _txtReview.clear();
         Get.snackbar('Customer Review', 'Failed to add review');
+        update();
       }
     }
   }

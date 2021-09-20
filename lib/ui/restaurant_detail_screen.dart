@@ -5,6 +5,7 @@ import 'package:restaurant_app2/common/const.dart';
 import 'package:restaurant_app2/common/styles.dart';
 import 'package:restaurant_app2/controller/favorite_controller.dart';
 import 'package:restaurant_app2/controller/res_detail_controller.dart';
+import 'package:restaurant_app2/controller/review_form_controller.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
 import 'package:restaurant_app2/data/db/hm_restaurant.dart';
 import 'package:restaurant_app2/data/models/restaurant_detail.dart';
@@ -25,7 +26,6 @@ class RestaurantDetailScreen extends StatefulWidget {
 }
 
 class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final favController = Get.put(FavoriteController());
 
   @override
@@ -67,16 +67,11 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                                   controller.detail.restaurant.id)) {
                                 favController.removeRestaurant(
                                     controller.detail.restaurant.id);
-                                Get.find<FavoriteController>()
-                                    .removedFromFavorite(
-                                        controller.detail.restaurant.name);
                               } else {
                                 favController.addFavorite(
                                   HiveRestaurant.fromResDetail(
                                       controller.detail.restaurant),
                                 );
-                                Get.find<FavoriteController>().addedToFavorite(
-                                    controller.detail.restaurant.name);
                               }
                             });
                           },
@@ -265,9 +260,8 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
                           ),
                         ),
                       ElevatedButton(
-                        onPressed: () async {
-                          await showReviewDialog(
-                              context, resDetails.id, resDetails.name);
+                        onPressed: () {
+                          showReviewForm(resDetails.id, resDetails.name);
                         },
                         child: Text(
                           'Add a review',
@@ -308,96 +302,63 @@ class _RestaurantDetailScreenState extends State<RestaurantDetailScreen> {
     );
   }
 
-  Future<void> showReviewDialog(
-      BuildContext context, String resId, String resName) async {
-    return await showDialog(
-      context: context,
-      builder: (context) {
-        final TextEditingController _txtReview = TextEditingController();
-        final TextEditingController _txtName = TextEditingController();
+  Future<void> showReviewForm(String resId, String resName) async {
+    final ReviewFormController controller = Get.put(ReviewFormController());
 
-        return AlertDialog(
-          content: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Write your review about ' + resName,
-                  style: myTextTheme.bodyText2,
-                ),
-                SizedBox(height: 8.0),
-                TextFormField(
-                  controller: _txtName,
-                  validator: (value) {
-                    return value!.isNotEmpty ? null : "Name must be filled";
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Enter your name",
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                TextFormField(
-                  controller: _txtReview,
-                  validator: (value) {
-                    return value!.isNotEmpty ? null : "Review must be filled";
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Enter your review",
-                  ),
-                ),
-              ],
+    return Get.defaultDialog(
+      contentPadding: EdgeInsets.all(24.0),
+      titlePadding: EdgeInsets.only(top: 16.0),
+      radius: 10.0,
+      title: 'Customer Review',
+      content: Form(
+        key: controller.reviewFormKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Write your review about ' + resName,
+              style: myTextTheme.bodyText2,
             ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Get.back();
+            SizedBox(height: 8.0),
+            TextFormField(
+              controller: controller.txtName,
+              validator: (value) {
+                return value!.isNotEmpty ? null : "Name must be filled";
               },
-              child: Text('Cancel', style: myTextTheme.button),
+              decoration: InputDecoration(
+                hintText: "Enter your name",
+              ),
             ),
-            TextButton(
-              onPressed: () async {
-                if (_formKey.currentState!.validate()) {
-                  bool success = await widget.apiService.postCustomerReview(
-                      resId, _txtName.text, _txtReview.text);
-                  try {
-                    if (success) {
-                      await showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              content: Text('Review added!'),
-                              actions: [
-                                TextButton(
-                                  child: Text('Ok'),
-                                  onPressed: () {
-                                    Get.back();
-                                  },
-                                )
-                              ],
-                            );
-                          });
-                    } else {
-                      await showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              content: Text('Failed to add review!'),
-                            );
-                          });
-                    }
-                    Get.back();
-                  } catch (e) {
-                    print('Error --> $e');
-                  }
-                }
+            SizedBox(height: 8.0),
+            TextFormField(
+              controller: controller.txtReview,
+              validator: (value) {
+                return value!.isNotEmpty ? null : "Review must be filled";
               },
-              child: Text('Submit', style: myTextTheme.button),
+              decoration: InputDecoration(
+                hintText: "Enter your review",
+              ),
             ),
           ],
-        );
-      },
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Get.back();
+          },
+          child: Text('Cancel', style: myTextTheme.button),
+        ),
+        TextButton(
+          onPressed: () async {
+            if (controller.reviewFormKey.currentState!.validate()) {
+              controller.postReview(resId);
+            }
+          },
+          child: Text('Submit', style: myTextTheme.button),
+        ),
+      ],
+      backgroundColor: Colors.white,
     );
   }
 }

@@ -21,7 +21,7 @@ final myTextTheme = TextTheme(
       fontSize: 32, fontWeight: FontWeight.w400, letterSpacing: 0.25),
   headline5: GoogleFonts.roboto(fontSize: 23, fontWeight: FontWeight.w400),
   headline6: GoogleFonts.roboto(
-      fontSize: 16, fontWeight: FontWeight.w600, letterSpacing: 0.15),
+      fontSize: 14, fontWeight: FontWeight.w600, letterSpacing: 0.15),
   subtitle1: GoogleFonts.montserrat(
       fontSize: 15, fontWeight: FontWeight.w400, letterSpacing: 0.15),
   subtitle2: GoogleFonts.montserrat(
