@@ -76,27 +76,5 @@ class NotificationService extends GetxController {
     await flutterLocalNotificationsPlugin.show(
         0, notificationTitle, notificationBody, platformChannelSpecifics,
         payload: jsonEncode(restaurant.toJson()));
-
-    // await flutterLocalNotificationsPlugin.zonedSchedule(
-    //   NOTIFICATION_ID,
-    //   notificationTitle,
-    //   notificationBody,
-    //   _nextInstanceOfElevenAM(),
-    //   platformChannelSpecifics,
-    //   androidAllowWhileIdle: true,
-    //   uiLocalNotificationDateInterpretation:
-    //       UILocalNotificationDateInterpretation.absoluteTime,
-    //   matchDateTimeComponents: DateTimeComponents.time,
-    // );
   }
-
-  // tz.TZDateTime _nextInstanceOfElevenAM() {
-  //   final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-  //   tz.TZDateTime scheduledDate =
-  //       tz.TZDateTime(tz.local, now.year, now.month, now.day, 11);
-  //   if (scheduledDate.isBefore(now)) {
-  //     scheduledDate = scheduledDate.add(const Duration(hours: 24));
-  //   }
-  //   return scheduledDate;
-  // }
 }
