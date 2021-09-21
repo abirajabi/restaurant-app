@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:restaurant_app2/common/styles.dart';
+import 'package:restaurant_app2/controller/res_detail_controller.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
 
 class ReviewFormController extends GetxController {
@@ -43,13 +44,12 @@ class ReviewFormController extends GetxController {
         Get.back();
         Get.snackbar('Customer Review', 'Review added',
             backgroundColor: purple5, snackPosition: SnackPosition.BOTTOM);
-        update();
+        Get.find<ResDetailController>().fetchRestaurantDetail();
       } else {
         _txtName.clear();
         _txtReview.clear();
         Get.snackbar('Customer Review', 'Failed to add review',
             backgroundColor: purple5, snackPosition: SnackPosition.BOTTOM);
-        update();
       }
     }
   }
