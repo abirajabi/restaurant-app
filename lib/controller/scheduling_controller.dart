@@ -14,7 +14,7 @@ class SchedulingController extends GetxController {
     _isScheduled = prefs.isDailyReminderActive.value;
     if (_isScheduled)
       AndroidAlarmManager.periodic(
-        Duration(seconds: 1),
+        Duration(hours: 24),
         NOTIFICATION_ID,
         BackgroundService.callback,
         startAt: DateTimeHelper.format(),
@@ -31,9 +31,9 @@ class SchedulingController extends GetxController {
     if (_isScheduled) {
       print('Scheduling Restaurant Activated');
       update();
-      return await AndroidAlarmManager.oneShot(
+      return await AndroidAlarmManager.periodic(
           Duration(seconds: 0), NOTIFICATION_ID, BackgroundService.callback,
-          exact: true, wakeup: true);
+          startAt: DateTimeHelper.format(), exact: true, wakeup: true);
     } else {
       print('Scheduling canceled');
       update();
