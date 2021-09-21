@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:restaurant_app2/common/styles.dart';
 import 'package:restaurant_app2/data/api/api_service.dart';
 
 class ReviewFormController extends GetxController {
@@ -9,9 +10,7 @@ class ReviewFormController extends GetxController {
   final _txtName = TextEditingController();
 
   get reviewFormKey => _reviewFormKey;
-
   get txtReview => _txtReview;
-
   get txtName => _txtName;
 
   @override
@@ -41,12 +40,15 @@ class ReviewFormController extends GetxController {
       if (postSuccess) {
         _txtName.clear();
         _txtReview.clear();
-        Get.snackbar('Customer Review', 'Review added');
+        Get.back();
+        Get.snackbar('Customer Review', 'Review added',
+            backgroundColor: purple5, snackPosition: SnackPosition.BOTTOM);
         update();
       } else {
         _txtName.clear();
         _txtReview.clear();
-        Get.snackbar('Customer Review', 'Failed to add review');
+        Get.snackbar('Customer Review', 'Failed to add review',
+            backgroundColor: purple5, snackPosition: SnackPosition.BOTTOM);
         update();
       }
     }
